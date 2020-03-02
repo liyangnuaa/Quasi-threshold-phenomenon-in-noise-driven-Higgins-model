@@ -58,7 +58,7 @@ end
 
 MFPT=sum(exittime)/Nphi;
 
-% 离出位置分布
+% 脌毛鲁枚脦禄脰脙路脰虏录
 L=length(separatrix(1,:));
 arclength=zeros(1,L);
 for i=2:L
@@ -75,3 +75,29 @@ end
 [EDPSTO,arc]=ksdensity(E);
 figure;
 plot(arc,EDPSTO);
+
+
+function xout=rk4_3(t0,h,x0,noise)
+% k1=h*fun(t0,x0);
+% k2=h*fun(t0+h/2,x0+0.5*k1);
+% k3=h*fun(t0+h/2,x0+0.5*k2);
+% k4=h*fun(t0+h,x0+k3);
+% xout=x0+(k1+2*k2+2*k3+k4)/6;
+% xout(2,:)=xout(2,:)+x0(3,:);
+
+% D=2e-4;
+
+% noise=sqrt(D*h)*randn(2,1);
+k1=h*fun3(t0,x0);
+x1=x0+k1+noise;
+k2=h*fun3(t0+h,x1);
+xout=x0+(k1+k2)/2+noise;
+
+
+function fout=fun3(t0,x0)
+
+% global p q
+p=1.1;
+q=0.2;
+
+fout=[1-x0(1)*x0(2);p*x0(2)*(x0(1)-(1+q)/(q+x0(2)))];
