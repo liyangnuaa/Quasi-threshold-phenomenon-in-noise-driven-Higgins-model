@@ -10,7 +10,7 @@ p=1.1;
 q=0.2;
 r1=1;
 r2=1;
-D=0.01;                                                                       % ²ÎÊý
+D=0.01;                                                                       % å‚æ•°
 
 fxy=@(x)[1-x(1)*x(2);p*x(2)*(x(1)-(1+q)/(q+x(2)))];
 xnode1=fsolve(fxy,[1;1]);
@@ -18,20 +18,20 @@ xnode1=fsolve(fxy,[1;1]);
 % xsad=fsolve(fxy,[0;0]);
 xnode=xnode1;
 
-N=5000;                                                                      % x¡¢y·½ÏòÀëÉ¢»¯¾«¶È
+N=5000;                                                                      % xã€yæ–¹å‘ç¦»æ•£åŒ–ç²¾åº¦
 Nc=N^2;
 Ntheta=10;
 xlin=linspace(xmin,xmax,N);
 ylin=linspace(ymin,ymax,N);
 h1=(xmax-xmin)/(N-1);
 h2=(ymax-ymin)/(N-1);
-h=norm([h1;h2]);                                                           % ÏàÁÚµã×î´ó¾àÀë
+h=norm([h1;h2]);                                                           % ç›¸é‚»ç‚¹æœ€å¤§è·ç¦»
 K=20;                                                                       % update radius
 [X,Y]=meshgrid(xlin,ylin);
 
 U=zeros(1,Nc);                                                             % quasipotential
 U(:)=inf;
-Far=1:Nc;                                                                  % Î´¼ÆËã½Úµã
+Far=1:Nc;                                                                  % æœªè®¡ç®—èŠ‚ç‚¹
 lx=floor((xnode(1)-xmin)/h1)+1;
 ly=floor((xnode(2)-ymin)/h2)+1;
 labelxnode=(ly-1)*N+lx;
@@ -79,7 +79,7 @@ AcceptedFront(L)=[];
 
 unFar=[Accepted AcceptedFront Considered];
 L=ismember(Far,unFar);
-Far(L)=[];                                                                 % FarµÄ³õÊ¼»¯
+Far(L)=[];                                                                 % Farçš„åˆå§‹åŒ–
 
 D=[1 0;0 1];
 C=[-xnode(2) -xnode(1);p*xnode(2) p*(xnode(1)-(1+q)/(q+xnode(2)))+p*xnode(2)*(1+q)/(q+xnode(2))^2];
@@ -88,7 +88,7 @@ B=-[D(1,1);D(1,2);D(2,2)];
 s=A\B;
 S=[s(1) s(2);s(2) s(3)];
 L=[Accepted AcceptedFront];
-for k=1:length(L)                                                          % AcceptedFrontµÄquasipotentialµÄ³õÊ¼»¯
+for k=1:length(L)                                                          % AcceptedFrontçš„quasipotentialçš„åˆå§‹åŒ–
     xlabel=mod(L(k)-1,N)+1;
     ylabel=floor((L(k)-1)/N)+1;
     xn=[xlin(xlabel);ylin(ylabel)];
@@ -97,7 +97,7 @@ end
 
 LC=length(Considered);
 WC=zeros(1,LC);
-for k=1:LC                                                                 % ConsideredµÄquasipotentialµÄ³õÊ¼»¯
+for k=1:LC                                                                 % Consideredçš„quasipotentialçš„åˆå§‹åŒ–
     z=Considered(k);
     WC(k)=CalculateW(z,N,xlin,ylin,AcceptedFront,U,Ntheta,h,K,p,q);
 end
@@ -105,7 +105,7 @@ end
 for k=1:Nc
     [M,I]=min(WC);
     z=Considered(I);
-    U(z)=M;                                                                % ½«×îÐ¡W¸³¸øU
+    U(z)=M;                                                                % å°†æœ€å°Wèµ‹ç»™U
     
 %     if z==labelsaddle+N-1
 %         zpre=zp;
@@ -114,7 +114,7 @@ for k=1:Nc
     
     zxlabel=mod(z-1,N)+1;
     zylabel=floor((z-1)/N)+1;
-    if (zxlabel==1)||(zxlabel==N)||(zylabel==1)||(zylabel==N)||(M>10)      % ÖÕÖ¹Ìõ¼þ
+    if (zxlabel==1)||(zxlabel==N)||(zylabel==1)||(zylabel==N)||(M>10)      % ç»ˆæ­¢æ¡ä»¶
         break;
     end
     
@@ -122,10 +122,10 @@ for k=1:Nc
     Considered(I)=[];
     Consideredlogic(zxlabel,zylabel)=false;
     Con=Considered;
-    AcceptedFront=[AcceptedFront z];                                       % ½«¾ßÓÐ×îÐ¡WµÄConsidered¸³¸øAcceptedFront
+    AcceptedFront=[AcceptedFront z];                                       % å°†å…·æœ‰æœ€å°Wçš„Consideredèµ‹ç»™AcceptedFront
     AcceptedFrontlogic(zxlabel,zylabel)=true;
     
-%     zFarad=neighbor(z,Far,N);                                              % ¼ÆËãFarÀïÃæÓëzÁÚ½ÓµÄµãµÄW
+%     zFarad=neighbor(z,Far,N);                                              % è®¡ç®—Faré‡Œé¢ä¸Žzé‚»æŽ¥çš„ç‚¹çš„W
 %     In=ismember(Far,zFarad);
 %     Far(In)=[];
     zFarad=[];
@@ -140,7 +140,7 @@ for k=1:Nc
     end
     Considered=[Considered zFarad];
     
-%     zAFad=neighbor(z,AcceptedFront,N);                                     % ¸üÐÂAcceptedFront
+%     zAFad=neighbor(z,AcceptedFront,N);                                     % æ›´æ–°AcceptedFront
     zAFad=[];
     L=[zxlabel-1 zxlabel zxlabel+1 zxlabel-1 zxlabel+1 zxlabel-1 zxlabel zxlabel+1;
         zylabel-1 zylabel-1 zylabel-1 zylabel zylabel zylabel+1 zylabel+1 zylabel+1];
@@ -170,14 +170,14 @@ for k=1:Nc
         end
     end
     
-%     zFarad=neighbor(z,Far,N);                                              % ¼ÆËãFarÀïÃæÓëzÁÚ½ÓµÄµãµÄW
+%     zFarad=neighbor(z,Far,N);                                              % è®¡ç®—Faré‡Œé¢ä¸Žzé‚»æŽ¥çš„ç‚¹çš„W
     LzF=length(zFarad);
     Wextra=zeros(1,LzF);
     for i=1:LzF
         Wextra(i)=CalculateW(zFarad(i),N,xlin,ylin,AcceptedFront,U,Ntheta,h,K,p,q);
     end
     
-    zCKh=withinKh(z,Con,K,h,N,xlin,ylin);                           % ¸üÐÂWC
+    zCKh=withinKh(z,Con,K,h,N,xlin,ylin);                           % æ›´æ–°WC
     LzC=length(zCKh);
     W=zeros(1,LzC);
     for i=1:LzC
@@ -231,36 +231,7 @@ mesh(X,Y,Uend);
 figure;
 contour(X,Y,Uend);
 
-h1 = openfig('Fig. 7 quasipotential by OUM.fig','reuse'); % open figure
-D1=get(gca,'Children'); %get the handle of the line object
-XData1=get(D1,'XData'); %get the x data
-YData1=get(D1,'YData'); %get the y data
-ZData1=get(D1,'ZData'); %get the z data
-
-figure;
-contour(XData1,YData1,ZData1,45);
-
-Nxy=10000;
-xyl=linspace(1,3.157,Nxy);
-Uxyl=zeros(1,Nxy);
-xd=XData1(1,:);
-yd=YData1(:,1)';
-for i=1:Nxy
-    Ix=find(xd>xyl(i),1,'first');
-    Iy=find(yd>xyl(i),1,'first');
-    z0=ZData1(Ix-1,Iy-1);
-    z1=ZData1(Ix,Iy-1);
-    z2=ZData1(Ix-1,Iy);
-    Uxyl(i)=z0+(z1-z0)*(xyl(i)-xd(Ix-1))/(xd(Ix)-xd(Ix-1))+(z2-z0)*(xyl(i)-yd(Iy-1))/(yd(Iy)-yd(Iy-1));
-end
-figure;
-plot(xyl,Uxyl);
-
-figure;
-plot(xyl,xyl,'k-');
-
-
-%%% ²åÖµSµãÄâÊÆ
+%%% æ’å€¼Sç‚¹æ‹ŸåŠ¿
 XData1=X;
 YData1=Y;
 ZData1=Uend;
@@ -274,3 +245,98 @@ z0=ZData1(Iy-1,Ix-1);
 z1=ZData1(Iy-1,Ix);
 z2=ZData1(Iy,Ix-1);
 U0=z0+(z1-z0)*(x0(1)-xd(Ix-1))/(xd(Ix)-xd(Ix-1))+(z2-z0)*(x0(2)-yd(Iy-1))/(yd(Iy)-yd(Iy-1));
+
+
+function W=CalculateW(z,N,xlin,ylin,AcceptedFront,U,Ntheta,h,K,p,q)
+
+zxlabel=mod(z-1,N)+1;
+zylabel=floor((z-1)/N)+1;
+x=[xlin(zxlabel);ylin(zylabel)];
+bx=[1-x(1)*x(2);p*x(2)*(x(1)-(1+q)/(q+x(2)))];
+
+WAF=[];
+AF=withinKh(z,AcceptedFront,K,h,N,xlin,ylin);                              % AcceptedFrontä¸­ä¸Žzè·ç¦»KhèŒƒå›´å†…çš„ç‚¹
+
+for i=1:length(AF)-1
+    BF=AF;
+    BF(i)=[];
+    AFadjacent=neighbor(AF(i),BF,N);                                       % AFä¸­ä¸ŽAF(i)é‚»æŽ¥çš„ç‚¹
+%     if i>1
+%         In=ismember(AFadjacent,AF(1:i-1));
+%         if isempty(In)==0
+%             AFadjacent(In)=[];
+%         end
+%     end
+    if isempty(AFadjacent)
+        continue;
+    end
+    
+    AFxlabel=mod(AF(i)-1,N)+1;
+    AFylabel=floor((AF(i)-1)/N)+1;
+    AFx=xlin(AFxlabel);
+    AFy=ylin(AFylabel);
+    
+    for j=1:length(AFadjacent)
+%         Wtheta=zeros(1,Ntheta);
+%         W12=linspace(U(AF(i)),U(AFadjacent(j)),Ntheta);
+        W1=U(AF(i));
+        W2=U(AFadjacent(j));
+        AFadxlabel=mod(AFadjacent(j)-1,N)+1;
+        AFadylabel=floor((AFadjacent(j)-1)/N)+1;
+        AFadx=xlin(AFadxlabel);
+        AFady=ylin(AFadylabel);
+        x0=[AFx;AFy];
+        x1=[AFadx;AFady];
+        
+        A=((bx'*(x1-x0)-(W1-W2))^2-norm(bx)^2*norm(x1-x0)^2)/norm(x1-x0)^2;
+        B=((bx'*(x1-x0)-(W1-W2))^2-norm(bx)^2*norm(x1-x0)^2)*((x-x1)'*(x1-x0))/norm(x1-x0)^4;
+        C=((bx'*(x1-x0)-(W1-W2))^2*norm(x-x1)^2-norm(bx)^2*((x-x1)'*(x1-x0))^2)/norm(x1-x0)^4;
+        s1=(-B+sqrt(B^2-A*C))/A;
+        s2=(-B-sqrt(B^2-A*C))/A;
+        
+        if isreal(s1)&&(s1>=0)&&(s1<=1)
+            s=s1;
+            Ws=s*W1+(1-s)*W2+norm(bx)*norm(x-s*x0-(1-s)*x1)-bx'*(x-s*x0-(1-s)*x1);
+        elseif isreal(s2)&&(s2>=0)&&(s2<=1)
+            s=s2;
+            Ws=s*W1+(1-s)*W2+norm(bx)*norm(x-s*x0-(1-s)*x1)-bx'*(x-s*x0-(1-s)*x1);
+        else
+            Ws=inf;
+        end
+        
+%         xtheta=linspace(AFx,AFadx,Ntheta);
+%         ytheta=linspace(AFy,AFady,Ntheta);
+%         
+%         Lx=x(1)-xtheta;
+%         Ly=x(2)-ytheta;
+%         Wtheta=W12+sqrt(Lx.^2+Ly.^2)*norm(bx)-(bx(1)*Lx+bx(2)*Ly);
+        
+        WAF=[WAF Ws];
+%         WAF=[WAF min(Wtheta)];
+    end
+end
+
+W=min(WAF);
+
+
+
+function AFadjacent=neighbor(z,AF,N)
+
+zadjacent=[z-1 z+1 z-N-1 z-N z-N+1 z+N-1 z+N z+N+1];
+In=ismember(zadjacent,AF);
+AFadjacent=zadjacent(In);
+
+
+function AF=withinKh(z,AcceptedFront,K,h,N,xlin,ylin)
+
+zxlabel=mod(z-1,N)+1;
+zylabel=floor((z-1)/N)+1;
+zx=xlin(zxlabel);
+zy=ylin(zylabel);
+AFxlabel=mod(AcceptedFront-1,N)+1;
+AFylabel=floor((AcceptedFront-1)/N)+1;
+AFx=xlin(AFxlabel);
+AFy=ylin(AFylabel);
+L= sqrt((AFx-zx).^2+(AFy-zy).^2)<K*h;
+AF=AcceptedFront(L);
+
