@@ -31,8 +31,8 @@ Bv1=Bv(1:2,3:4);
 Bv2=Bv(3:4,3:4);
 M=real(Bv2/Bv1);
 
-Nphi=20000;            % »·ÉÏ»®·Ö¾«¶È
-Sphi=zeros(1,Nphi);    % ËùÓĞµÄphiÖĞSµÄ×îĞ¡Öµ
+Nphi=20000;            % ç¯ä¸Šåˆ’åˆ†ç²¾åº¦
+Sphi=zeros(1,Nphi);    % æ‰€æœ‰çš„phiä¸­Sçš„æœ€å°å€¼
 % phi=linspace(0,2*pi,Nphi);
 phi=linspace(1.84,2.15,Nphi);
 % phi=linspace(1.570735367683842,1.571035517758880,Nphi);
@@ -69,7 +69,7 @@ for j=1:nT
     t0=(j-1)*h;
     xlamS2=rk4(t0,h,xlamS);
 
-%%% µ½separatrixÖÕÖ¹
+%%% åˆ°separatrixç»ˆæ­¢
     I=[];
     for k=1:length(pos)
         [m,I2]=min(abs(separatrix(1,:)-xlamS2(1,k)));
@@ -159,3 +159,43 @@ arclength=zeros(1,L);
 for i=2:L
     arclength(i)=arclength(i-1)+norm(separatrix0(:,i)-separatrix0(:,i-1));
 end
+
+
+function xout=rk4(t0,h,x0)
+k1=h*fun(t0,x0);
+k2=h*fun(t0+h/2,x0+0.5*k1);
+k3=h*fun(t0+h/2,x0+0.5*k2);
+k4=h*fun(t0+h,x0+k3);
+xout=x0+(k1+2*k2+2*k3+k4)/6;
+
+
+function y=fun(~,x)
+
+global p q r1 r2
+x1=x(1,:);
+x2=x(2,:);
+x3=x(3,:);
+x4=x(4,:);
+W11=x(5,:);
+W12=x(6,:);
+W21=x(7,:);
+W22=x(8,:);
+
+b1x1=-x2;
+b1x2=-x1;
+b2x1=p*x2;
+b2x2=p*x1-q*p*(1+q)./(q+x2).^2;
+b2x22=2*q*p*(1+q)./(q+x2).^3;
+
+y=zeros(size(x));
+
+y(1,:)=1-x1.*x2+r1^2*x3;
+y(2,:)=p*x2.*(x1-(1+q)./(q+x2))+r2^2*x4;
+y(3,:)=x2.*x3-p*x2.*x4;
+y(4,:)=x1.*x3-(p*(x1-(1+q)./(q+x2))+p*x2*(1+q)./(q+x2).^2).*x4;
+y(5,:)=-W11.^2-W12.^2-2*b1x1.*W11-2*b2x1.*W12;
+y(6,:)=-W11.*W21-W12.*W22-b1x2.*W11-b2x2.*W12-b1x1.*W21-b2x1.*W22+x3-p*x4;
+y(7,:)=y(6,:);
+y(8,:)=-W21.^2-W22.^2-2*b1x2.*W21-2*b2x2.*W22-b2x22.*x4;
+y(9,:)=1/2*r1^2*x3.^2+1/2*r2^2*x4.^2;
+y(10,:)=-((b1x1+b2x2)+1/2*W11+1/2*W22).*x(10,:);
